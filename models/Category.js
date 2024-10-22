@@ -1,13 +1,6 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const categorySchema = new mongoose.Schema({
-  categoryId: {
-    type: String,
-    required: true,
-    unique: true,
-    minlength: 5,
-    maxlength: 50
-},
   categoryName: {
     type: String,
     required: true,

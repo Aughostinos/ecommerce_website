@@ -1,8 +1,10 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
+
+mongoose.set('strictQuery', false);
 
 const connectDb = async () => {
   try {
-    await mongoose.connect('mongodb+srv://August:<db_password>@database.uchqx.mongodb.net/?retryWrites=true&w=majority&appName=Database', {
+    await mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
   });
@@ -12,4 +14,4 @@ const connectDb = async () => {
   }
 };
 
-module.exports = connectDb;
+export default connectDb;
