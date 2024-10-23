@@ -48,6 +48,23 @@ const userSchema = new mongoose.Schema({
     type: Array,
     required: false
 },
+  orders: {
+    type: Array,
+    required: false
+},
+  isAdmin: {
+    type: Boolean,
+    required: false,
+    default: false
+},
+  createdAt: {
+    type: Date,
+    default: Date.now
+},
+  updatedAt: {
+    type: Date,
+    default: Date.now
+},
 });
 
 const User = mongoose.model('User', userSchema);

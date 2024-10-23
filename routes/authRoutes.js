@@ -11,31 +11,31 @@ import {
 } from '../controllers/authController.js';
 
 
-const router = Router();
+const authRouter = Router();
 
 
 
 // handle login
-router.post('/login', post_login);
+authRouter.post('/login', post_login);
 
-router.get('/login', get_login);
+authRouter.get('/login', get_login);
 
 // handle registeration
-router.post('/register', post_register);
+authRouter.post('/register', post_register);
 
-router.get('/register', get_register);
+authRouter.get('/register', get_register);
 
 // handle forgot password
-router.post('/forgot-password', post_forgot_password);
+authRouter.post('/forgot-password', post_forgot_password);
 
-router.post('/reset-password', post_reset_password);
+authRouter.post('/reset-password', post_reset_password);
 
 
 // handle logout
-router.get('/logout', get_logout);
+authRouter.get('/logout', get_logout);
 
 // handle delete account
-router.delete('/delete', async (req, res) => {
+authRouter.delete('/delete', async (req, res) => {
     const { userId } = req.body;
   
     try {
@@ -47,4 +47,4 @@ router.delete('/delete', async (req, res) => {
   });
 
 
-export default router;
+export default authRouter;
