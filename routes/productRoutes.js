@@ -6,6 +6,7 @@ import {
     updateProduct,
     deleteProduct,
     getProduct,
+    getProductByCategory,
     searchProduct
 } from '../controllers/productController.js';
 
@@ -14,6 +15,9 @@ const productRouter = Router();
 
 //this should list all products
 productRouter.get('/get-products', getProducts);
+
+//this should list all products by category
+productRouter.get('/get-products-by-category/:category', getProductByCategory);
 
 //this should add a product
 productRouter.post('/add-product', addProduct);
