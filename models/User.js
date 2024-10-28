@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import validator from 'validator';
 const { isEmail } = validator;
 
@@ -49,7 +49,8 @@ const userSchema = new mongoose.Schema({
     required: false
 },
   orders: {
-    type: Array,
+    type: Schema.Types.ObjectId,
+    ref: 'Order',
     required: false
 },
   isAdmin: {

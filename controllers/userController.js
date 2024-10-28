@@ -26,6 +26,28 @@ export const deleteAccount = async (userId) => {
     }
 };
 
+// get profile
+export const getProfile = async (userId) => {
+    try {
+      const user = await User.findById(userId);
+      if (!user) throw new Error('User not found');
+      return user;
+    } catch (error) {
+      throw error;
+    }
+};
+
+// update profile
+export const updateProfile = async (userId, update) => {
+    try {
+      const user = await User.findByIdAndUpdate(userId, update, { new: true });
+      if (!user) throw new Error('User not found');
+      return user;
+    } catch (error) {
+      throw error;
+    }
+};
+
 // add to wishlist
 export const addToWishlist = async (userId, productId) => {
     try {

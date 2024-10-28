@@ -1,11 +1,10 @@
 import mongoose from 'mongoose';
 
 const orderSchema = new mongoose.Schema({
-  userId: {
-    type: String,
-    required: [true, 'User ID is required'],
-    minlength: 5,
-    maxlength: 50
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: [true, 'User is required']
 },
   products: {
     type: Array,
@@ -14,7 +13,7 @@ const orderSchema = new mongoose.Schema({
   quantity: {
     type: Number,
     required: [true, 'Quantity is required'],
-    default: 0
+    min: 1
 },
   orderStatus: {
     type: String,
@@ -77,6 +76,24 @@ const orderSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
 },
+});
+
+// middleware to calculate order total
+orderSchema.pre('save', function(next) {
+
+  // check quantity of products
+  this.products.forEach(product => {
+    if (product.quantity > product.stock) {
+      throw new Error('Product is out of stock');
+    }
+  });
+ 
+  const productTotal = this.products.reduce(
+    (acc, product) => acc + product.price * product.quantity, 0);
+
+  // calculate total (product total + tax + shipping)
+  this.orderTotal = productTotal + this.taxPrice + this.shippingPrice;
+  next();
 });
 
 const Order = mongoose.model('Order', orderSchema);

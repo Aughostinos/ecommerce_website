@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
 const categorySchema = new mongoose.Schema({
   categoryName: {
@@ -8,7 +8,8 @@ const categorySchema = new mongoose.Schema({
     maxlength: 50
 },
   products: {
-    type: Array,
+    type: Schema.Types.ObjectId,
+    ref: 'Product',
     required: false
 },
   createdAt: {

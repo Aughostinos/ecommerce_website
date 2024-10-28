@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
 const productsSchema = new mongoose.Schema({
   name: {
@@ -19,10 +19,9 @@ const productsSchema = new mongoose.Schema({
     maxlength: 255
 },
   category: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: 'Category',
     required: [true, 'Product category is required'],
-    minlength: 5,
-    maxlength: 50
 },
   stock: {
     type: Number,
