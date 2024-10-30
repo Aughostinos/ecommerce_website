@@ -12,14 +12,14 @@ export const getOrders = async (req, res) => {
 
 // add order
 export const addOrder = async (req, res) => {
-    const { userId, productId, quantity, total } = req.body;
+    const { userId, products, shippingAddress, paymentMethod } = req.body;
     try {
-        const order = await Order.create({ userId, productId, quantity, total });
-        res.status(200).json({ message: 'Order added successfully', order });
+      const order = await Order.create({ user: userId, products, shippingAddress, paymentMethod });
+      res.status(200).json({ message: 'Order added successfully', order });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+      res.status(400).json({ error: error.message });
     }
-};
+  };
 
 // update order
 export const updateOrder = async (req, res) => {
