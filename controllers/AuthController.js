@@ -42,8 +42,8 @@ export const post_login = async (req, res) => {
     try {
         const user = await login(email, password);
         const token = genToken(user._id);
-        res.cookie('jwt', token, { httpOnly: true, maxAge: 3 * 24 * 60 * 60 * 1000 });
-        res.status(200).json({ user: user._id });
+        res.cookie('jwt', token, { httpOnly: true, maxAge: 3 * 24 * 60 * 60 * 1000, sameSite: 'Lax' });
+        res.status(200).json({ user: user._id, token });
     } catch (err) {
         const errors = handleErrors(err);
         res.status(400).json({ errors });
@@ -79,43 +79,43 @@ export const post_register = async (req, res) => {
 export const post_forgot_password = async (req, res) => {
     const email = req.body.email;
     try {
-        const user = User.findOne({ email });
-        if (!user) {
-            throw Error('User not found');
-        }
-        const token = genToken(user._id);
-        sendResetEmail(email, token);
-        res.status(200).json({ message: 'Password reset link sent to your email' });
+      const user = await User.findOne({ email });
+      if (!user) {
+        throw Error('User not found');
+      }
+      const token = genToken(user._id);
+      await sendResetEmail(email, token);
+      res.status(200).json({ message: 'Password reset link sent to your email' });
     } catch (err) {
-        res.status(400).json({ error: 'Failed to send reset email' });
-};
-}
+      res.status(400).json({ error: 'Failed to send reset email' });
+    }
+  };
 
-export const post_reset_password = async (req, res) => {
+  export const post_reset_password = async (req, res) => {
     const token = req.cookies.jwt;
     const password = req.body.password;
     if (token) {
-        jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
-            if (err) {
-                console.log(err.message);
-                res.redirect('/login');
-            } else {
-                const user = await User.findById(decodedToken.id);
-                if (!user) {
-                   throw Error('User not found');
-                }
-                const salt = await bcrypt.genSalt();
-                const hashedPassword = await bcrypt.hash(password, salt);
-
-                user.password = hashedPassword;
-                await user.save();
-                res.status(200).json({ message: 'Password reset successfully' });
-            }
-        });
+      jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
+        if (err) {
+          console.log(err.message);
+          res.status(400).json({ error: 'Invalid or expired token' });
+        } else {
+          const user = await User.findById(decodedToken.id);
+          if (!user) {
+            res.status(404).json({ error: 'User not found' });
+          } else {
+            const salt = await bcrypt.genSalt();
+            const hashedPassword = await bcrypt.hash(password, salt);
+            user.password = hashedPassword;
+            await user.save();
+            res.status(200).json({ message: 'Password reset successfully' });
+          }
+        }
+      });
     } else {
-        res.status(400).json({ error: 'Invalid or expired token' });
+      res.status(400).json({ error: 'Invalid or expired token' });
     }
-}
+  };
 
 export const get_logout = (req, res) => {
     res.cookie('jwt', 'logged out', { maxAge: 1 });
