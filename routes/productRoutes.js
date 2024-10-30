@@ -7,14 +7,16 @@ import {
     deleteProduct,
     getProduct,
     getProductByCategory,
-    searchProduct
+    searchProduct,
+    getProductReviews,
+    addProductReview
 } from '../controllers/productController.js';
 
 
 const productRouter = Router();
 
 //this should list all products
-productRouter.get('/get-products', getProducts);
+productRouter.get('/', getProducts);
 
 //this should list all products by category
 productRouter.get('/get-products-by-category/:category', getProductByCategory);
@@ -34,4 +36,9 @@ productRouter.get('/get-product/:id', getProduct);
 //this should search for a product
 productRouter.get('/search-product', searchProduct);
 
+//this should get product reviews
+productRouter.get('/:id/reviews', getProductReviews);
+
+//this should add a product review
+productRouter.post('/:id/reviews', addProductReview);
 export default productRouter;

@@ -7,9 +7,10 @@ import {
     post_register, 
     post_forgot_password, 
     post_reset_password, 
-    get_logout 
+    get_logout,
 } from '../controllers/authController.js';
-
+import { deleteAccount } from '../controllers/userController.js';
+import { authenticateUser } from "../middleware/authMiddleware.js";
 
 const authRouter = Router();
 
@@ -46,5 +47,9 @@ authRouter.delete('/delete', async (req, res) => {
     }
   });
 
+// retrieve user details
+authRouter.get('/user', authenticateUser, (req, res) => {
+ res.status(200).json({ user: req.user });
+  });
 
 export default authRouter;
