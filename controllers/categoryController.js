@@ -48,7 +48,7 @@ export const updateCategory = async (req, res) => {
 export const searchCategory = async (req, res) => {
     const { name } = req.query;
     try {
-        const categories = await Category.find({ name: { $regex: name, $options: '$i' } });
+        const categories = await Category.find({ name: { $regex: name, $options: 'i' } });
         res.status(200).json(categories);
     } catch (error) {
         res.status(400).json({ error: error.message });
