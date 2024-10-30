@@ -1,4 +1,5 @@
 import Product from '../models/Product.js';
+import Order from '../models/Order.js';
 
 
 export const getProducts = async (req, res) => {
@@ -101,14 +102,18 @@ export const getProductOrder = async (req, res) => {
 
 // get product reviews
 export const getProductReviews = async (req, res) => {
-    const { productId } = req.params;
+    const { id } = req.params;
     try {
-        const product = await Product.findById(productId);
-        res.status(200).json(product.reviews);
+      const product = await Product.findById(id);
+      if (!product) {
+        return res.status(404).json({ error: 'Product not found' });
+      }
+      res.status(200).json(product.reviews);
     } catch (error) {
-        res.status(400).json({ error: error.message });
+      console.error('Error fetching reviews:', error);
+      res.status(500).json({ error: 'Failed to fetch reviews' });
     }
-}
+  };
 
 // get product review
 export const getProductReview = async (req, res) => {

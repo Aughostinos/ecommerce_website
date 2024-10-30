@@ -1,59 +1,85 @@
 import jwt from 'jsonwebtoken';
+import User from '../models/User.js';
 
-export const authorization = (req, res, next) => {
-    const token = req.cookies.jwt;
-    if (token) {
-        jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
-            if (err) {
-                console.log(err.message);
-                res.redirect('/login');
-            } else {
-                next();
-            }
-        });
-    } else {
-        res.redirect('/login');
+// Authenticate user and attach user data to the request
+export const authenticateUser = async (req, res, next) => {
+  try {
+    // Retrieve token from cookies or Authorization header
+    let token = req.cookies.jwt;
+    if (!token && req.headers.authorization) {
+      token = req.headers.authorization.split(' ')[1]; // Extract token from header
     }
+
+    console.log('Received JWT:', token);
+
+    if (!token) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+
+    // Verify the token and decode it
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log('Decoded JWT:', decoded);
+
+    // Find user by ID
+    const user = await User.findById(decoded.id);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Attach user object to the request
+    req.user = user;
+    next();
+  } catch (error) {
+    console.error('Authentication Error:', error.message);
+    res.status(401).json({ error: 'Invalid or expired token' });
+  }
 };
 
+// Middleware to provide user data for templates
 export const getUserData = async (req, res, next) => {
-    const token = req.cookies.jwt;
-    if (token) {
-        jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
-            if (err) {
-                console.log(err.message);
-                res.locals.user = null;
-                next();
-            } else {
-                const user = await User.findById(decodedToken.id);
-                res.locals.user = user;
-                next();
-            }
-        });
-    } else {
-        res.locals.user = null;
-        next();
+  try {
+    let token = req.cookies.jwt;
+    if (!token && req.headers.authorization) {
+      token = req.headers.authorization.split(' ')[1];
     }
+
+    if (token) {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const user = await User.findById(decoded.id);
+      res.locals.user = user;
+    } else {
+      res.locals.user = null;
+    }
+    next();
+  } catch (error) {
+    console.error(error.message);
+    res.locals.user = null;
+    next();
+  }
 };
 
-// admin auth
-export const adminAuth = (req, res, next) => {
-    const token = req.cookies.jwt;
-    if (token) {
-        jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
-            if (err) {
-                console.log(err.message);
-                res.redirect('/login');
-            } else {
-                const user = await User.findById(decodedToken.id);
-                if (!user || user.role !== 'admin') {
-                    next();
-                } else {
-                    res.redirect('/login');
-                }
-            }
-        });
-    } else {
-        res.redirect('/login');
+// Admin authentication middleware
+export const adminAuth = async (req, res, next) => {
+  try {
+    let token = req.cookies.jwt;
+    if (!token && req.headers.authorization) {
+      token = req.headers.authorization.split(' ')[1];
     }
-}
+
+    if (!token) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id);
+    if (user && user.isAdmin) {
+      req.user = user;
+      next();
+    } else {
+      return res.status(403).json({ error: 'Admin access required' });
+    }
+  } catch (error) {
+    console.error(error.message);
+    res.status(401).json({ error: 'Invalid or expired token' });
+  }
+};
