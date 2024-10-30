@@ -40,19 +40,19 @@ const userSchema = new mongoose.Schema({
     type: Date,
     required: false
 },
-  wishList: {
-    type: Array,
-    required: false
-},
-  cart: {
-    type: Array,
-    required: false
-},
-  orders: {
+  wishList: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Product'
+}],
+  cart: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Product'
+}],
+  orders: [{
     type: Schema.Types.ObjectId,
     ref: 'Order',
     required: false
-},
+}],
   isAdmin: {
     type: Boolean,
     required: false,

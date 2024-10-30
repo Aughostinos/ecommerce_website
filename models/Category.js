@@ -7,11 +7,11 @@ const categorySchema = new mongoose.Schema({
     minlength: 5,
     maxlength: 50
 },
-  products: {
+  products: [{
     type: Schema.Types.ObjectId,
     ref: 'Product',
     required: false
-},
+}],
   createdAt: {
     type: Date,
     default: Date.now

@@ -35,7 +35,7 @@ const productsSchema = new mongoose.Schema({
     type: Array,
     required: false
 },
-  productReviews: {
+  reviews: {
     type: Array,
     required: false
 },
