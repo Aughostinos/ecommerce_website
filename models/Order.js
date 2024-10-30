@@ -4,78 +4,71 @@ const orderSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: [true, 'User is required']
-},
-  products: {
-    type: Array,
-    required: [true, 'Products are required']
-},
-  quantity: {
-    type: Number,
-    required: [true, 'Quantity is required'],
-    min: 1
-},
-  orderStatus: {
-    type: String,
-    required: [true, 'Order status is required'],
-    minlength: 5,
-    maxlength: 50,
-    default: 'Pending'
-},
-  orderTotal: {
-    type: Number,
-    required: [true, 'Order total is required'],
-},
+    required: [true, 'User is required'],
+  },
+  orderItems: [
+    {
+      product: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product',
+        required: [true, 'Product is required'],
+      },
+      quantity: {
+        type: Number,
+        required: [true, 'Quantity is required'],
+        min: 1,
+      },
+      price: {
+        type: Number,
+        required: [true, 'Product price is required'],
+      },
+    },
+  ],
   shippingAddress: {
-    type: String,
-    required: [true, 'Shipping address is required'],
-    minlength: 5,
-    maxlength: 255
-},
+    fullName: { type: String, required: [true, 'Full name is required'] },
+    address: { type: String, required: [true, 'Address is required'] },
+    city: { type: String, required: [true, 'City is required'] },
+    postalCode: { type: String, required: [true, 'Postal code is required'] },
+    country: { type: String, required: [true, 'Country is required'] },
+  },
   paymentMethod: {
     type: String,
-    required: [true,  'Payment method is required'],
-    minlength: 5,
-    maxlength: 50
-},
+    required: [true, 'Payment method is required'],
+  },
   paymentResult: {
-    type: Object,
-    required: false
-},
+    id: String,
+    status: String,
+    update_time: String,
+    email_address: String,
+  },
+  itemsPrice: {
+    type: Number,
+    required: [true, 'Items price is required'],
+  },
   shippingPrice: {
     type: Number,
-    required: false
-},
+    required: [true, 'Shipping price is required'],
+  },
   taxPrice: {
     type: Number,
-    required: false
-},
+    required: [true, 'Tax price is required'],
+  },
+  totalPrice: {
+    type: Number,
+    required: [true, 'Total price is required'],
+  },
   isPaid: {
     type: Boolean,
-    required: false,
-    default: false
-},
-  paidAt: {
-    type: Date,
-    required: false
-},
+    default: false,
+  },
+  paidAt: Date,
   isDelivered: {
     type: Boolean,
-    required: false,
-    default: false
-},
-  deliveredAt: {
-    type: Date,
-    required: false
-},
-  createdAt: {
-    type: Date,
-    default: Date.now
-},
-  updatedAt: {
-    type: Date,
-    default: Date.now
-},
+    default: false,
+  },
+  deliveredAt: Date,
+}, {
+  timestamps: true,
 });
 
 // middleware to calculate order total
