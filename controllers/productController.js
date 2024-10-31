@@ -15,8 +15,8 @@ export const getProducts = async (req, res) => {
 export const addProduct = async (req, res) => {
     const { name, description, price, category, stock } = req.body;
     try {
-      // Extract image URLs from Cloudinary response
-      const images = req.files.map((file) => file.path);
+      // Extract image URLs
+      const images = req.files.map((file) => file.path || file.secure_url);
   
       const product = await Product.create({
         name,

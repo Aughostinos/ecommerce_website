@@ -2,6 +2,7 @@ import User from "../models/User.js";
 import Order from "../models/Order.js";
 import bcrypt from 'bcrypt';
 import mongoose from "mongoose";
+import Product from "../models/Product.js";
 
 const ObjectId = mongoose.Types.ObjectId;;
 
@@ -51,30 +52,40 @@ export const updateProfile = async (userId, update) => {
     }
 };
 
+//wishlist controller functions
 // add to wishlist
 export const addToWishlist = async (req, res) => {
   try {
     const { productId } = req.body;
     const userId = req.user._id;
 
-    if (!ObjectId.isValid(productId)) {
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
       return res.status(400).json({ error: 'Invalid Product ID' });
     }
 
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
     const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+
+    // Ensure user.wishlist is initialized
+    if (!Array.isArray(user.wishlist)) {
+      user.wishlist = [];
     }
 
-    const productExists = user.wishList.some((item) => String(item) === productId);
-    if (!productExists) {
-      user.wishList.push(ObjectId(productId));
-      await user.save();
+    // Check if product is already in wishlist
+    if (user.wishlist.some((id) => id.toString() === productId)) {
+      return res.status(400).json({ error: 'Product already in wishlist' });
     }
 
-    res.status(200).json({ message: 'Product added to wishlist' });
+    user.wishlist.push(productId);
+    await user.save();
+
+    res.status(200).json({ message: 'Product added to wishlist', wishlist: user.wishlist });
   } catch (error) {
-    console.error(error);
+    console.error('Error adding to wishlist:', error);
     res.status(500).json({ error: 'Failed to add product to wishlist' });
   }
 };
@@ -85,17 +96,33 @@ export const removeFromWishlist = async (req, res) => {
     const { productId } = req.body;
     const userId = req.user._id;
 
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      return res.status(400).json({ error: 'Invalid Product ID' });
     }
 
-    user.wishList = user.wishList.filter(id => !id.equals(productId));
+    const user = await User.findById(userId);
+
+    // Ensure user.wishlist is initialized
+    if (!Array.isArray(user.wishlist)) {
+      user.wishlist = [];
+    }
+
+    // Check if the product exists in the wishlist
+    if (!user.wishlist.some((id) => id.toString() === productId)) {
+      return res.status(400).json({ error: 'Product not found in wishlist' });
+    }
+
+    // Remove the product from the wishlist
+    user.wishlist = user.wishlist.filter((id) => id.toString() !== productId);
+
     await user.save();
 
-    res.status(200).json({ message: 'Product removed from wishlist' });
+    res.status(200).json({
+      message: 'Product removed from wishlist',
+      wishlist: user.wishlist,
+    });
   } catch (error) {
-    console.error(error);
+    console.error('Error removing from wishlist:', error);
     res.status(500).json({ error: 'Failed to remove product from wishlist' });
   }
 };
@@ -196,20 +223,24 @@ export const updateCartItem = async (req, res) => {
 // Get user cart and wishlist
 export const getCartAndWishlist = async (req, res) => {
   try {
-      console.log('User:', req.user);
-
-      const user = await User.findById(req.user._id).populate('cart').populate('wishList');
-      if (!user) {
-          return res.status(404).json({ error: 'User not found' });
-      }
-
-      res.status(200).json({
-          cart: user.cart,
-          wishlist: user.wishList,
+    const userId = req.user._id;
+    const user = await User.findById(userId)
+      .populate({
+        path: 'cart.product',
+        model: 'Product',
+      })
+      .populate({
+        path: 'wishlist',
+        model: 'Product',
       });
+
+    res.status(200).json({
+      cart: user.cart,
+      wishlist: user.wishlist,
+    });
   } catch (error) {
-      console.error('Error fetching cart and wishlist:', error);
-      res.status(500).json({ error: 'Failed to fetch cart and wishlist' });
+    console.error('Error fetching cart and wishlist:', error);
+    res.status(500).json({ error: 'Failed to fetch cart and wishlist' });
   }
 };
 
