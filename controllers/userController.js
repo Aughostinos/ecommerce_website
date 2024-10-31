@@ -42,14 +42,21 @@ export const getProfile = async (req, res) => {
 };
 
 // update profile
-export const updateProfile = async (userId, update) => {
-    try {
-      const user = await User.findByIdAndUpdate(userId, update, { new: true });
-      if (!user) throw new Error('User not found');
-      return user;
-    } catch (error) {
-      throw error;
-    }
+export const updateUserProfile = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const updates = req.body;
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $set: updates },
+      { new: true, runValidators: true }
+    ).select('-password'); // Exclude password from the response
+
+    res.status(200).json({ message: 'Profile updated successfully', user: updatedUser });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
 };
 
 //wishlist controller functions
@@ -264,49 +271,5 @@ export const updateUserDetails = async (userId, update) => {
     } catch (error) {
       throw error;
     }
-};
-
-// get user wishList
-export const getUserWishList = async (userId) => {
-    try {
-      const user = await User.findById(userId);
-      if (!user) throw new Error('User not found');
-      return user.wishList;
-    } catch (error) {
-      throw error;
-    }
-};
-
-// get user cart
-export const getUserCart = async (userId) => {
-    try {
-      const user = await User.findById(userId);
-      if (!user) throw new Error('User not found');
-      return user.cart;
-    } catch (error) {
-      throw error;
-    }
-  };
-
-// get user orders
-export const getUserOrders = async (req, res) => {
-  const { userId } = req.params;
-  try {
-      const orders = await Order.find({ userId });
-      res.status(200).json(orders);
-  } catch (error) {
-      res.status(400).json({ error: error.message });
-  }
-};
-
-// get user product orders
-export const getUserProductOrders = async (req, res) => {
-  const { userId, productId } = req.params;
-  try {
-      const orders = await Order.find({ userId, productId });
-      res.status(200).json(orders);
-  } catch (error) {
-      res.status(400).json({ error: error.message });
-  }
 };
 

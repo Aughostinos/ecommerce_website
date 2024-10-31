@@ -1,13 +1,13 @@
 import { Router } from "express";
 import { 
-    getProfile,
-    updateProfile,
     addToWishlist,
     removeFromWishlist,
     addToCart,
     removeFromCart,
     getCartAndWishlist,
-    updateCartItem
+    updateCartItem,
+    getProfile,
+    updateUserProfile
 } from '../controllers/userController.js';
 import { authenticateUser } from "../middleware/authMiddleware.js";
 
@@ -17,7 +17,7 @@ const userRouter = Router();
 userRouter.get('/profile', authenticateUser, getProfile);
 
 // this should update the user's profile
-userRouter.put('/update-profile', authenticateUser, updateProfile);
+userRouter.put('/update-profile', authenticateUser, updateUserProfile);
 
 // this should add a product to the user's wishlist
 userRouter.post('/add-to-wishlist', authenticateUser, addToWishlist);
@@ -36,7 +36,6 @@ userRouter.put('/update-cart-item', authenticateUser, updateCartItem);
 
 // this should get all products user's cart adn wishlist
 userRouter.get('/get-cart-wishlist', authenticateUser, getCartAndWishlist);
-
 
 
 export default userRouter;
