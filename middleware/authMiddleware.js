@@ -59,28 +59,11 @@ export const getUserData = async (req, res, next) => {
 };
 
 // Admin authentication middleware
-export const adminAuth = async (req, res, next) => {
-  try {
-    let token = req.cookies.jwt;
-    if (!token && req.headers.authorization) {
-      token = req.headers.authorization.split(' ')[1];
-    }
-
-    if (!token) {
-      return res.status(401).json({ error: 'Authentication required' });
-    }
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.id);
-    if (user && user.isAdmin) {
-      req.user = user;
-      next();
-    } else {
-      return res.status(403).json({ error: 'Admin access required' });
-    }
-  } catch (error) {
-    console.error(error.message);
-    res.status(401).json({ error: 'Invalid or expired token' });
+export const authorizeAdmin = (req, res, next) => {
+  if (req.user && req.user.isAdmin) {
+    next();
+  } else {
+    res.status(403).json({ error: 'Not authorized as admin' });
   }
 };
 
