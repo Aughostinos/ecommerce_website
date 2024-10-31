@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import Product from './Product.js';
 
 const orderSchema = new mongoose.Schema({
   user: {
@@ -71,23 +72,6 @@ const orderSchema = new mongoose.Schema({
   timestamps: true,
 });
 
-// middleware to calculate order total
-orderSchema.pre('save', function(next) {
-
-  // check quantity of products
-  this.products.forEach(product => {
-    if (product.quantity > product.stock) {
-      throw new Error('Product is out of stock');
-    }
-  });
- 
-  const productTotal = this.products.reduce(
-    (acc, product) => acc + product.price * product.quantity, 0);
-
-  // calculate total (product total + tax + shipping)
-  this.orderTotal = productTotal + this.taxPrice + this.shippingPrice;
-  next();
-});
 
 const Order = mongoose.model('Order', orderSchema);
 export default Order;

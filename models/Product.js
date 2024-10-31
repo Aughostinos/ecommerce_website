@@ -27,11 +27,12 @@ const productsSchema = new mongoose.Schema({
     type: Number,
     required: [true, 'Product stock is required'],
 },
-  image:
-  [{
+image: [
+  {
     type: String,
-    required: true,
-}],
+    required: [true, 'Product image is required'],
+  },
+],
   details: {
     type: Array,
     required: false
