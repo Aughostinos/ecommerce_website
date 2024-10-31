@@ -4,7 +4,7 @@ import {
     getProducts,
     getProduct,
     getProductByCategory,
-    searchProduct,
+    searchProducts,
     getProductReviews,
     getFeaturedProducts,
     addProductReview
@@ -27,7 +27,7 @@ productRouter.get('/featured', getFeaturedProducts);
 productRouter.get('/get-product/:id', getProduct);
 
 //this should search for a product
-productRouter.get('/search-product', searchProduct);
+productRouter.get('/search', searchProducts);
 
 //this should get product reviews
 productRouter.get('/:id/reviews', getProductReviews);

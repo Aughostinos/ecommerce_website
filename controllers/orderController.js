@@ -109,36 +109,29 @@ export const deleteOrder = async (req, res) => {
 
 // get single order
 export const getOrderById = async (req, res) => {
-    try {
-      const orderId = req.params.id;
-      const userId = req.user._id;
-  
-      console.log(`Fetching order ${orderId} for user ${userId}`);
-  
-      const order = await Order.findOne({ _id: orderId, user: userId })
-        .populate('orderItems.product', 'name image price');
-  
-      if (!order) {
-        return res.status(404).json({ error: 'Order not found' });
-      }
-  
-      res.status(200).json({ order });
-    } catch (error) {
-      console.error('Error fetching order:', error);
-      res.status(500).json({ error: 'Failed to fetch order details' });
+  try {
+    const order = await Order.findById(req.params.id).populate('orderItems.product', 'name image');
+
+    if (order && order.user.toString() === req.user._id.toString()) {
+      res.status(200).json(order);
+    } else {
+      res.status(404).json({ message: 'Order not found' });
     }
-  };
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 // get user orders
 export const getUserOrders = async (req, res) => {
-    try {
-      const userId = req.user._id;
-      const orders = await Order.find({ user: userId }).populate('orderItems.product');
-      res.status(200).json({ orders });
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  };
+  try {
+    const orders = await Order.find({ user: req.user._id }).sort({ createdAt: -1 });
+    res.status(200).json(orders);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 
 
 

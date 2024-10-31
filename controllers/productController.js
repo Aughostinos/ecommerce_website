@@ -42,15 +42,18 @@ export const getProduct = async (req, res) => {
 };
 
 // search product
-export const searchProduct = async (req, res) => {
-    const { query } = req.query;
+export const searchProducts = async (req, res) => {
     try {
-        const products = await Product.find({ name: { $regex: query, $options: 'i' } });
-        res.status(200).json(products);
+      const query = req.query.query || '';
+      const products = await Product.find({
+        name: { $regex: query, $options: 'i' },
+      }).populate('category');
+  
+      res.status(200).json({ products });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+      res.status(500).json({ error: error.message });
     }
-};
+  };
 
 // get product by category
 export const getProductByCategory = async (req, res) => {

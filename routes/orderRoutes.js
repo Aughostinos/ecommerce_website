@@ -26,10 +26,8 @@ orderRouter.put('/mark-as-paid/:id', authenticateUser ,markOrderAsPaid);
 //this should delete an order
 orderRouter.delete('/delete-order/:id', authenticateUser, deleteOrder);
 
-//this should get a single order
-orderRouter.get('/get-order/:id', authenticateUser, authorizeAdmin, getOrderById);
-
 // this should get all orders by a user
 orderRouter.get('/my-orders', authenticateUser, getUserOrders);
+
 export default orderRouter;
 
