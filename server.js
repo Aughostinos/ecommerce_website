@@ -10,6 +10,7 @@ import orderRouter from './routes/orderRoutes.js';
 import userRouter from './routes/userRoutes.js';
 import productRouter from './routes/productRoutes.js';
 import categoryRouter from './routes/categoryRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
 import { getUserData } from './middleware/authMiddleware.js';
 import cors from 'cors';
 
@@ -39,6 +40,7 @@ app.use('/order', orderRouter);
 app.use('/user', userRouter);
 app.use('/products', productRouter);
 app.use('/category', categoryRouter);
+app.use('/admin', adminRoutes);
 
 app.listen(process.env.PORT || 3000, () => {
   console.log('listening on *:3000');

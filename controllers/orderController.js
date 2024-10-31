@@ -129,16 +129,16 @@ export const getOrderById = async (req, res) => {
     }
   };
 
-// search order
-export const searchOrder = async (req, res) => {
-    const { query } = req.query;
+// get user orders
+export const getUserOrders = async (req, res) => {
     try {
-        const order = await Order.find({ $text: { $search: query } });
-        res.status(200).json(order);
+      const userId = req.user._id;
+      const orders = await Order.find({ user: userId }).populate('orderItems.product');
+      res.status(200).json({ orders });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+      res.status(500).json({ error: error.message });
     }
-};
+  };
 
 
 

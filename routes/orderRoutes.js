@@ -5,7 +5,7 @@ import {
     markOrderAsPaid,
     deleteOrder,
     getOrderById,
-    searchOrder
+    getUserOrders
 } from '../controllers/orderController.js';
 import { authenticateUser, authorizeAdmin } from "../middleware/authMiddleware.js";
 
@@ -29,8 +29,7 @@ orderRouter.delete('/delete-order/:id', authenticateUser, deleteOrder);
 //this should get a single order
 orderRouter.get('/get-order/:id', authenticateUser, authorizeAdmin, getOrderById);
 
-//this should search for an order
-orderRouter.get('/search-order', authenticateUser, searchOrder);
-
+// this should get all orders by a user
+orderRouter.get('/my-orders', authenticateUser, getUserOrders);
 export default orderRouter;
 
