@@ -1,5 +1,7 @@
 import User from '../models/User.js';
 import Order from '../models/Order.js';
+import Product from '../models/Product.js';
+import Category from '../models/Category.js';
 
 // handle user operations
 export const getAllUsers = async (req, res) => {
@@ -11,19 +13,22 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
-export const updateUser = async (req, res) => {
-  try {
-    const updates = req.body;
-    const user = await User.findByIdAndUpdate(
-      req.params.id,
-      { $set: updates },
-      { new: true, runValidators: true }
-    ).select('-password');
-    res.status(200).json({ message: 'User updated', user });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
+export const adminUpdateUser = async (req, res) => {
+    try {
+      const { name, userName, email, phone, dateOfBirth, role } = req.body;
+      const updates = { name, userName, email, phone, dateOfBirth, role };
+  
+      const user = await User.findByIdAndUpdate(
+        req.params.id,
+        { $set: updates },
+        { new: true, runValidators: true }
+      ).select('-password');
+  
+      res.status(200).json({ message: 'User updated', user });
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  };
 
 export const deleteUser = async (req, res) => {
   try {
@@ -60,45 +65,58 @@ export const updateOrderStatus = async (req, res) => {
 
 // handle product operations
 export const getAllProducts = async (req, res) => {
-  try {
-    const products = await Product.find();
-    res.status(200).json({ products });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    try {
+      const products = await Product.find().populate('category');
+      res.status(200).json( products );
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
 };
 
-export const addProduct = async (req, res) => {
+export const createProduct = async (req, res) => {
     try {
-        const product = await Product.create(req.body);
-        res.status(200).json({ message: 'Product added', product });
+      const { name, description, price, category, stock } = req.body;
+  
+      const product = new Product({
+        name,
+        description,
+        price,
+        category,
+        stock,
+        image: req.body.image || [],
+      });
+  
+      await product.save();
+  
+      res.status(201).json({ message: 'Product created', product });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+      res.status(400).json({ error: error.message });
     }
 };
 
 
 export const updateProduct = async (req, res) => {
-  try {
-    const updates = req.body;
-    const product = await Product.findByIdAndUpdate(
+    try {
+      const updates = req.body;
+      const product = await Product.findByIdAndUpdate(
         req.params.id,
         { $set: updates },
         { new: true, runValidators: true }
-        );
-    res.status(200).json({ message: 'Product updated', product });
+      );
+      res.status(200).json({ message: 'Product updated', product });
     } catch (error) {
-    res.status(400).json({ error: error.message });
+      res.status(400).json({ error: error.message });
     }
-};
+  };
+
 
 export const deleteProduct = async (req, res) => {
-    try {
-        await Product.findByIdAndDelete(req.params.id);
-        res.status(200).json({ message: 'Product deleted' });
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
+  try {
+    await Product.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: 'Product deleted' });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
 };
 
 // handle category operations
@@ -111,15 +129,22 @@ export const getAllCategories = async (req, res) => {
   }
 };
 
-export const addCategory = async (req, res) => {
-  const { name } = req.body;
-  try {
-    const category = await Category.create({ name });
-    res.status(200).json({ message: 'Category added successfully', category });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
+export const createCategory = async (req, res) => {
+    try {
+      const { categoryName, description } = req.body;
+  
+      const category = new Category({
+        categoryName,
+        description,
+      });
+  
+      await category.save();
+  
+      res.status(201).json({ message: 'Category created', category });
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  };
 
 export const deleteCategory = async (req, res) => {
   const { id } = req.params;

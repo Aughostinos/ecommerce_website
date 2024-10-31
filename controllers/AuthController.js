@@ -32,12 +32,9 @@ const handleErrors = (err) => {
     }
 
     return errors;
-}
-export const get_login = (req, res) => {
-    res.send('login');
 };
 
-export const post_login = async (req, res) => {
+export const postLogin = async (req, res) => {
     const { email, password } = req.body;
     try {
         const user = await login(email, password);
@@ -50,10 +47,6 @@ export const post_login = async (req, res) => {
     }
 };
 
-export const get_register = (req, res) => {
-    res.send('register');
-};
-
 export const genToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
         expiresIn: 3 * 24 * 60 * 60
@@ -61,7 +54,7 @@ export const genToken = (id) => {
 }
 
 
-export const post_register = async (req, res) => {
+export const postRegister = async (req, res) => {
     const { email, password, phone, dateOfBirth, userName, name } = req.body;
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -76,7 +69,7 @@ export const post_register = async (req, res) => {
     }
 };
 
-export const post_forgot_password = async (req, res) => {
+export const postForgotPassword = async (req, res) => {
     const email = req.body.email;
     try {
       const user = await User.findOne({ email });
@@ -91,7 +84,7 @@ export const post_forgot_password = async (req, res) => {
     }
   };
 
-  export const post_reset_password = async (req, res) => {
+  export const postResetPassword = async (req, res) => {
     const token = req.cookies.jwt;
     const password = req.body.password;
     if (token) {
@@ -117,7 +110,15 @@ export const post_forgot_password = async (req, res) => {
     }
   };
 
-export const get_logout = (req, res) => {
+export const getLogout = (req, res) => {
     res.cookie('jwt', 'logged out', { maxAge: 1 });
     res.redirect('/login');
+};
+
+export const getAuthenticatedUser = async (req, res) => {
+  try {
+    res.status(200).json({ user: req.user });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };

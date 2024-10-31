@@ -10,7 +10,6 @@ export const authenticateUser = async (req, res, next) => {
       token = req.headers.authorization.split(' ')[1]; // Extract token from header
     }
 
-    console.log('Received JWT:', token);
 
     if (!token) {
       return res.status(401).json({ error: 'Authentication required' });
@@ -18,7 +17,6 @@ export const authenticateUser = async (req, res, next) => {
 
     // Verify the token and decode it
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log('Decoded JWT:', decoded);
 
     // Find user by ID
     const user = await User.findById(decoded.id);
@@ -60,10 +58,9 @@ export const getUserData = async (req, res, next) => {
 
 // Admin authentication middleware
 export const authorizeAdmin = (req, res, next) => {
-  if (req.user && req.user.isAdmin) {
+  if (req.user && req.user.role === 'admin') {
     next();
   } else {
-    res.status(403).json({ error: 'Not authorized as admin' });
+    res.status(403).json({ error: 'Admin access required' });
   }
 };
-

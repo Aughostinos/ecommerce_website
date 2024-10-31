@@ -2,16 +2,16 @@ import express from 'express';
 import { authenticateUser, authorizeAdmin } from '../middleware/authMiddleware.js';
 import {
     getAllUsers,
-    updateUser,
+    adminUpdateUser,
     deleteUser,
     getAllOrders,
     updateOrderStatus,
     getAllCategories,
-    addCategory,
+    createCategory,
     updateCategory,
     deleteCategory,
     getAllProducts,
-    addProduct,
+    createProduct,
     updateProduct,
     deleteProduct
 } from '../controllers/adminController.js';
@@ -20,7 +20,7 @@ const adminRouter = express.Router();
 
 // handle users
 adminRouter.get('/users', authenticateUser, authorizeAdmin, getAllUsers);
-adminRouter.put('/users/:id', authenticateUser, authorizeAdmin, updateUser);
+adminRouter.put('/users/:id', authenticateUser, authorizeAdmin, adminUpdateUser);
 adminRouter.delete('/users/:id', authenticateUser, authorizeAdmin, deleteUser);
 
 
@@ -30,13 +30,13 @@ adminRouter.put('/orders/:id', authenticateUser, authorizeAdmin, updateOrderStat
 
 // handle categories
 adminRouter.get('/categories', authenticateUser, authorizeAdmin, getAllCategories);
-adminRouter.post('/categories', authenticateUser, authorizeAdmin, addCategory);
+adminRouter.post('/categories', authenticateUser, authorizeAdmin, createCategory);
 adminRouter.put('/categories/:id', authenticateUser, authorizeAdmin, updateCategory);
 adminRouter.delete('/categories/:id', authenticateUser, authorizeAdmin, deleteCategory);
 
 // handle products
 adminRouter.get('/products', authenticateUser, authorizeAdmin, getAllProducts);
-adminRouter.post('/products', authenticateUser, authorizeAdmin, addProduct);
+adminRouter.post('/products', authenticateUser, authorizeAdmin, createProduct);
 adminRouter.put('/products/:id', authenticateUser, authorizeAdmin, updateProduct);
 adminRouter.delete('/products/:id', authenticateUser, authorizeAdmin, deleteProduct);
 

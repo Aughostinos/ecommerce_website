@@ -2,13 +2,11 @@ import { Router } from "express";
 
 import { 
     getProducts,
-    addProduct,
-    updateProduct,
-    deleteProduct,
     getProduct,
     getProductByCategory,
     searchProduct,
     getProductReviews,
+    getFeaturedProducts,
     addProductReview
 } from '../controllers/productController.js';
 import upload from '../middleware/multer.js';
@@ -22,14 +20,8 @@ productRouter.get('/', getProducts);
 //this should list all products by category
 productRouter.get('/get-products-by-category/:category', getProductByCategory);
 
-//this should add a product
-productRouter.post('/add-product', upload.array('images', 5), addProduct);
-
-//this should update a product
-productRouter.put('/update-product/:id', upload.array('images', 5), updateProduct);
-
-//this should delete a product
-productRouter.delete('/delete-product/:id', deleteProduct);
+//this should list all featured products
+productRouter.get('/featured', getFeaturedProducts);
 
 //this should get a single product
 productRouter.get('/get-product/:id', getProduct);

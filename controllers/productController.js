@@ -11,57 +11,24 @@ export const getProducts = async (req, res) => {
     }
 };
 
-// add product
-export const addProduct = async (req, res) => {
-    const { name, description, price, category, stock } = req.body;
+// get featured products
+export const getFeaturedProducts = async (req, res) => {
     try {
-      // Extract image URLs
-      const images = req.files.map((file) => file.path || file.secure_url);
+      const categories = await Product.distinct('category');
+      const featuredProducts = [];
   
-      const product = await Product.create({
-        name,
-        description,
-        price,
-        category,
-        stock,
-        image: images,
-      });
-      res.status(200).json({ message: 'Product added successfully', product });
-    } catch (error) {
-      res.status(400).json({ error: error.message });
-    }
-  };
-
-// update product
-export const updateProduct = async (req, res) => {
-    const { id } = req.params;
-    const { name, description, price, category, stock } = req.body;
-    try {
-      const updateData = { name, description, price, category, stock };
-  
-      if (req.files && req.files.length > 0) {
-
-        const images = req.files.map((file) => file.path);
-        updateData.image = images;
+      for (const categoryId of categories) {
+        const products = await Product.find({ category: categoryId })
+          .limit(5)
+          .sort({ createdAt: -1 });
+        featuredProducts.push(...products);
       }
   
-      const product = await Product.findByIdAndUpdate(id, updateData, { new: true });
-      res.status(200).json({ message: 'Product updated successfully', product });
+      res.status(200).json(featuredProducts);
     } catch (error) {
-      res.status(400).json({ error: error.message });
+      res.status(500).json({ error: error.message });
     }
   };
-
-// delete product 
-export const deleteProduct = async (req, res) => {
-    const { id } = req.params;
-    try {
-        const product = await Product.findByIdAndDelete(id);
-        res.status(200).json({ message: 'Product deleted successfully' });
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-};
 
 // get single product
 export const getProduct = async (req, res) => {
@@ -92,28 +59,6 @@ export const getProductByCategory = async (req, res) => {
         const products = await Product.find({ category });
         res.status(200).json(products);
     } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-}
-
-// get product orders
-export const getProductOrders = async (req, res) => {
-    const { productId } = req.params;
-    try {
-        const orders = await Order.find({ productId });
-        res.status(200).json(orders);
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-};
-
-// get product order
-export const getProductOrder = async (req, res) => {
-    const { productId, orderId } = req.params;
-    try {
-        const order = await Order.findOne({ productId, _id: orderId });
-        res.status(200).json(order);
-    }   catch (error) {
         res.status(400).json({ error: error.message });
     }
 }
