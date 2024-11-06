@@ -1,26 +1,33 @@
-```markdown
 # E-Commerce Backend
 
 Welcome to the **E-Commerce Backend** repository! This is the server-side application of our e-commerce platform, built using **Node.js**, **Express.js**, and **MongoDB**. It handles all business logic, data storage, and API endpoints to support the frontend application.
 
 ## Table of Contents
 
-- [Features](#features)
-- [Technologies Used](#technologies-used)
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Configuration](#configuration)
-- [Running the Application](#running-the-application)
-- [Project Structure](#project-structure)
-- [API Documentation](#api-documentation)
-  - [Authentication Routes](#authentication-routes)
-  - [User Routes](#user-routes)
-  - [Order Routes](#order-routes)
-  - [Product Routes](#product-routes)
-- [Available Scripts](#available-scripts)
-- [Contributing](#contributing)
-- [License](#license)
-- [Contact](#contact)
+- [E-Commerce Backend](#e-commerce-backend)
+  - [Table of Contents](#table-of-contents)
+  - [Features](#features)
+  - [Technologies Used](#technologies-used)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Configuration](#configuration)
+  - [Running the Application](#running-the-application)
+    - [Development Mode](#development-mode)
+    - [Production Mode](#production-mode)
+  - [Project Structure](#project-structure)
+  - [API Documentation](#api-documentation)
+    - [Authentication Routes](#authentication-routes)
+    - [User Routes](#user-routes)
+    - [Order Routes](#order-routes)
+    - [Product Routes](#product-routes)
+  - [Available Scripts](#available-scripts)
+    - [`npm run dev` or `yarn dev`](#npm-run-dev-or-yarn-dev)
+    - [`npm start` or `yarn start`](#npm-start-or-yarn-start)
+    - [`npm test` or `yarn test`](#npm-test-or-yarn-test)
+    - [`npm run lint` or `yarn lint`](#npm-run-lint-or-yarn-lint)
+  - [Project Structure](#project-structure-1)
+  - [Contributing](#contributing)
+  - [Contact](#contact)
 
 ## Features
 
@@ -511,5 +518,3 @@ Contributions are what make the open-source community such an amazing place to l
 Augustinos Abusaif -  augustinos.nabil@gmail.com
 
 Project Link: \[https://github.com/Aughostinos/Ecommerce_website_Front_End\](https://github.com/Aughostinos/ecommerce_website)
-
-\---
