@@ -1,33 +1,21 @@
 import User from "../models/User.js";
-import Order from "../models/Order.js";
 import bcrypt from 'bcrypt';
 import mongoose from "mongoose";
 import Product from "../models/Product.js";
 
-const ObjectId = mongoose.Types.ObjectId;;
+const ObjectId = mongoose.Types.ObjectId;
 
 // login user
-export const login = async function(email, password) {
-    const user = await User.findOne({ email });
-    if (user) {
-        const auth = await bcrypt.compare(password, user.password);
-        if (auth) {
-            return user;
-        }
-        throw Error('incorrect password');
+export const login = async function (email, password) {
+  const user = await User.findOne({ email });
+  if (user) {
+    const auth = await bcrypt.compare(password, user.password);
+    if (auth) {
+      return user;
     }
-    throw Error('incorrect email');
-};
-
-// delete account
-export const deleteAccount = async (userId) => {
-    try {
-      const deletedUser = await User.findByIdAndDelete(userId);
-      if (!deletedUser) throw new Error('User not found');
-      return { message: 'Account deleted successfully' };
-    } catch (error) {
-      throw error;
-    }
+    throw Error('incorrect password');
+  }
+  throw Error('incorrect email');
 };
 
 // get profile
@@ -51,7 +39,7 @@ export const updateUserProfile = async (req, res) => {
       userId,
       { $set: updates },
       { new: true, runValidators: true }
-    ).select('-password'); // Exclude password from the response
+    ).select('-password');
 
     res.status(200).json({ message: 'Profile updated successfully', user: updatedUser });
   } catch (error) {
@@ -59,7 +47,7 @@ export const updateUserProfile = async (req, res) => {
   }
 };
 
-//wishlist controller functions
+/*wishlist controller functions*/
 // add to wishlist
 export const addToWishlist = async (req, res) => {
   try {
@@ -77,12 +65,10 @@ export const addToWishlist = async (req, res) => {
 
     const user = await User.findById(userId);
 
-    // Ensure user.wishlist is initialized
     if (!Array.isArray(user.wishlist)) {
       user.wishlist = [];
     }
 
-    // Check if product is already in wishlist
     if (user.wishlist.some((id) => id.toString() === productId)) {
       return res.status(400).json({ error: 'Product already in wishlist' });
     }
@@ -109,17 +95,14 @@ export const removeFromWishlist = async (req, res) => {
 
     const user = await User.findById(userId);
 
-    // Ensure user.wishlist is initialized
     if (!Array.isArray(user.wishlist)) {
       user.wishlist = [];
     }
 
-    // Check if the product exists in the wishlist
     if (!user.wishlist.some((id) => id.toString() === productId)) {
       return res.status(400).json({ error: 'Product not found in wishlist' });
     }
 
-    // Remove the product from the wishlist
     user.wishlist = user.wishlist.filter((id) => id.toString() !== productId);
 
     await user.save();
@@ -135,7 +118,7 @@ export const removeFromWishlist = async (req, res) => {
 };
 
 
-// cart controller functions
+/* cart controller functions */
 // add to cart
 export const addToCart = async (req, res) => {
   try {
@@ -153,16 +136,13 @@ export const addToCart = async (req, res) => {
 
     const user = await User.findById(userId);
 
-    // Check if product already exists in cart
     const cartItemIndex = user.cart.findIndex(
       (item) => item.product.toString() === productId
     );
 
     if (cartItemIndex > -1) {
-      // Update quantity
       user.cart[cartItemIndex].quantity += quantity || 1;
     } else {
-      // Add new item to cart
       user.cart.push({ product: productId, quantity: quantity || 1 });
     }
 
@@ -251,25 +231,5 @@ export const getCartAndWishlist = async (req, res) => {
   }
 };
 
-  // get user details
-export const getUserDetails = async (userId) => {
-    try {
-      const user = await User.findById(userId);
-      if (!user) throw new Error('User not found');
-      return user;
-    } catch (error) {
-      throw error;
-    }
-};
-
-// update user details
-export const updateUserDetails = async (userId, update) => {
-    try {
-      const user = await User.findByIdAndUpdate(userId, update, { new: true });
-      if (!user) throw new Error('User not found');
-      return user;
-    } catch (error) {
-      throw error;
-    }
-};
-
+/* for future implementation */
+//  this should allow user to delete his account
