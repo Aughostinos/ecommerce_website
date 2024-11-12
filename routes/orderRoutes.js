@@ -2,12 +2,10 @@ import { Router } from "express";
 import { 
     getOrders,
     createOrder,
-    markOrderAsPaid,
-    deleteOrder,
     getOrderById,
     getUserOrders
 } from '../controllers/orderController.js';
-import { authenticateUser, authorizeAdmin } from "../middleware/authMiddleware.js";
+import { authenticateUser } from "../middleware/authMiddleware.js";
 
 const orderRouter = Router();
 
@@ -19,12 +17,6 @@ orderRouter.post('/create-order', authenticateUser, createOrder);
 
 //this should get a single order
 orderRouter.get('/:id', authenticateUser, getOrderById);
-
-//this should update an order
-orderRouter.put('/mark-as-paid/:id', authenticateUser ,markOrderAsPaid);
-
-//this should delete an order
-orderRouter.delete('/delete-order/:id', authenticateUser, deleteOrder);
 
 // this should get all orders by a user
 orderRouter.get('/my-orders', authenticateUser, getUserOrders);

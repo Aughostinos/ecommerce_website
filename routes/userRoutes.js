@@ -30,7 +30,7 @@ userRouter.post('/remove-from-wishlist', authenticateUser, removeFromWishlist);
 userRouter.post('/add-to-cart', authenticateUser, addToCart);
 
 // this should remove a product from the user's cart
-userRouter.delete('/remove-from-cart', authenticateUser, removeFromCart);
+userRouter.post('/remove-from-cart', authenticateUser, removeFromCart);
 
 // this should update the user's cart
 userRouter.put('/update-cart-item', authenticateUser, updateCartItem);

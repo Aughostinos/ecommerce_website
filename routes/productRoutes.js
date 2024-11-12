@@ -1,15 +1,14 @@
 import { Router } from "express";
 
-import { 
+import {
     getProducts,
     getProduct,
     getProductByCategory,
     searchProducts,
-    getProductReviews,
     getFeaturedProducts,
+    getProductReviews,
     addProductReview
 } from '../controllers/productController.js';
-import upload from '../middleware/multer.js';
 
 
 const productRouter = Router();
@@ -29,9 +28,11 @@ productRouter.get('/get-product/:id', getProduct);
 //this should search for a product
 productRouter.get('/search', searchProducts);
 
+/* for future implementation */
 //this should get product reviews
 productRouter.get('/:id/reviews', getProductReviews);
 
 //this should add a product review
 productRouter.post('/:id/reviews', addProductReview);
+
 export default productRouter;
