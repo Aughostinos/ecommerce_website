@@ -33,29 +33,6 @@ export const authenticateUser = async (req, res, next) => {
   }
 };
 
-// Middleware to provide user data for templates
-export const getUserData = async (req, res, next) => {
-  try {
-    let token = req.cookies.jwt;
-    if (!token && req.headers.authorization) {
-      token = req.headers.authorization.split(' ')[1];
-    }
-
-    if (token) {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      const user = await User.findById(decoded.id);
-      res.locals.user = user;
-    } else {
-      res.locals.user = null;
-    }
-    next();
-  } catch (error) {
-    console.error(error.message);
-    res.locals.user = null;
-    next();
-  }
-};
-
 // Admin authentication middleware
 export const authorizeAdmin = (req, res, next) => {
   if (req.user && req.user.role === 'admin') {
