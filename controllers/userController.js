@@ -232,4 +232,4 @@ export const getCartAndWishlist = async (req, res) => {
 };
 
 /* for future implementation */
-//  this should allow user to delete his account
+//  I should add an endpoint which should allow user to delete his account
