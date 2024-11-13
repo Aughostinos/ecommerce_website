@@ -1,11 +1,19 @@
 import nodemailer from 'nodemailer';
+import dotenv from 'dotenv';
 
-const transporter = nodemailer.createTransport({
-  service: 'Gmail',
+dotenv.config();
+
+let transporter = nodemailer.createTransport({
+  service: 'gmail',
+  port: 587,
+  secure: false,
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD,
+      user: process.env.EMAIL_USER, // generated ethereal user
+      pass: process.env.EMAIL_PASSWORD // generated ethereal password
   },
+  tls: {
+      rejectUnauthorized: false
+  }
 });
 
 export const sendResetEmail = async (to, token) => {
@@ -13,15 +21,11 @@ export const sendResetEmail = async (to, token) => {
 
   const mailOptions = {
     from: process.env.EMAIL_USER,
-    to,
+    to: 'augusitnos.nabil@gmail.com',
     subject: 'Password Reset',
+    text: `You requested a password reset. Click here to reset your password: ${resetUrl}`,
     html: `<p>You requested a password reset. Click <a href="${resetUrl}">here</a> to reset your password.</p>`,
   };
 
-  try {
     await transporter.sendMail(mailOptions);
-  } catch (error) {
-    console.error('Error sending email:', error);
-    throw error;
-  }
 };

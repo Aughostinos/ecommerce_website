@@ -517,4 +517,4 @@ Contributions are what make the open-source community such an amazing place to l
 
 Augustinos Abusaif -  augustinos.nabil@gmail.com
 
-Project Link: \[https://github.com/Aughostinos/Ecommerce_website_Front_End\](https://github.com/Aughostinos/ecommerce_website)
+Project Link: [https://github.com/Aughostinos/Ecommerce_website_Front_End](https://github.com/Aughostinos/Ecommerce_website_Front_End)

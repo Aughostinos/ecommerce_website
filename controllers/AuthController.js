@@ -34,26 +34,28 @@ const handleErrors = (err) => {
   return errors;
 };
 
-// handle login
-export const postLogin = async (req, res) => {
-  const { email, password } = req.body;
-  try {
-    const user = await login(email, password);
-    const token = genToken(user._id);
-    res.cookie('jwt', token, { httpOnly: true, maxAge: 3 * 24 * 60 * 60 * 1000, sameSite: 'Lax' });
-    res.status(200).json({ user: user._id, token });
-  } catch (err) {
-    const errors = handleErrors(err);
-    res.status(400).json({ errors });
-  }
-};
-
 // generate token
 export const genToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: 3 * 24 * 60 * 60
   });
 }
+
+// handle login
+export const postLogin = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    let user = await login(email, password);
+    const token = genToken(user._id);
+    user = user.toObject();
+    delete user.password;
+    res.cookie('jwt', token, { httpOnly: true, maxAge: 3 * 24 * 60 * 60 * 1000, sameSite: 'Lax' });
+    res.status(200).json({ user, token });
+  } catch (err) {
+    const errors = handleErrors(err);
+    res.status(400).json({ errors });
+  }
+};
 
 // handle register
 export const postRegister = async (req, res) => {
@@ -84,6 +86,7 @@ export const postForgotPassword = async (req, res) => {
     res.status(200).json({ message: 'Password reset link sent to your email' });
   } catch (err) {
     res.status(400).json({ error: 'Failed to send reset email' });
+    console.error(err);
   }
 };
 

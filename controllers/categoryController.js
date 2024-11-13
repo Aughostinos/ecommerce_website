@@ -10,7 +10,7 @@ export const getCategories = async (req, res) => {
     }
 };
 
-// get category
+// get category by id
 export const getCategory = async (req, res) => {
     const { id } = req.params;
     try {
